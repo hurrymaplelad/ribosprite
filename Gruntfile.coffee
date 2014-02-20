@@ -22,7 +22,7 @@ module.exports = (grunt) ->
         debug: true
         extensions: ['.coffee']
         transform: ['coffeeify']
-        watch: true
+        watch: false
       example:
         src: 'example/example.coffee'
         dest: 'built/example.js'
@@ -32,6 +32,7 @@ module.exports = (grunt) ->
         cwd: 'example/'
         src: [
           '*.html'
+          '*.css'
         ]
         dest: 'built/'
         expand: true
@@ -47,6 +48,9 @@ module.exports = (grunt) ->
 
       html: (filepath) ->
         ['copy:example']
+
+      coffee: (filepath) ->
+        ['watchify']
 
     simplemocha:
       all: 'test/**/*.coffee'
