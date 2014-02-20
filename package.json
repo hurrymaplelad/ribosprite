@@ -2,17 +2,21 @@
   "name": "ribosprite",
   "version": "0.0.0",
   "description": "Form templating for RIvets + BOotstrap + SPRIngform + TEacup",
-  "author": "Good Eggs <open-source@goodeggs.com>",
-  "contributors": [
-    "Adam Hull <adam@hmlad.com>"
+  "author": "Adam Hull <adam@hmlad.com>",
+  "keywords": [
+    "forms",
+    "validation",
+    "springform",
+    "rivets",
+    "teacup"
   ],
   "main": "lib/ribosprite",
   "repository": {
     "type": "git",
-    "url": "git://github.com/goodeggs/ribosprite.git"
+    "url": "git://github.com/hurrymaplelad/ribosprite.git"
   },
-  "homepage": "https://github.com/goodeggs/ribosprite",
-  "bugs": "https://github.com/goodeggs/ribosprite/issues",
+  "homepage": "https://github.com/hurrymaplelad/ribosprite",
+  "bugs": "https://github.com/hurrymaplelad/ribosprite/issues",
   "dependencies": {},
   "devDependencies": {
     "coffee-script": ">=1.7.x",
