@@ -30,14 +30,17 @@ before ->
   @timeout 35000
   capabilities =
     browserName: 'chrome'
+
   if process.env.SAUCE
     capabilities =
-      browserName: 'chrome'
-      platform: 'OS X 10.9'
-      version : '31'
+      browserName: process.env.BROWSER
+      platform: process.env.PLATFORM
+      version: process.env.VERSION
       name: "Integration - #{process.env.NODE_ENV}"
-    if process.env.NODE_ENV is 'ci'
+    if process.env.NODE_ENV is 'travis'
       capabilities['tunnel-identifier'] = process.env.TRAVIS_JOB_NUMBER
+      capabilities.build = process.env.TRAVIS_BUILD_NUMBER
+      capabilities.tags = ['travis']
 
   browser
     .init(capabilities)

@@ -3,9 +3,13 @@ node_js:
 - '0.10'
 env:
   global:
-    - NODE_ENV=ci VERBOSE=1
+    - NODE_ENV=travis VERBOSE=1
     - SAUCE=1
     - SAUCE_USERNAME=ribosprite
     - secure: UrMstPhnhOfCkt3O/kVnAChXHpys9EFhTeRXNK+PE9dniyNaWaBZ3rCjc8hzQP7MrzKEvrRl2YCBPfxzZBoW1bO5Lg/rBFQW72wIuu7QJHAyf+l2QZkk/vi8D2Prj/NBLfxKPka/Ku2mTs1Nrvu+Jduw+1gLi+ppXreDKHBG+VQ=
+  matrix:
+    -BROWSER=chrome
+    -BROWSER=iphone
+    -BROWSER="internet explorer"
 addons:
   sauce_connect: true

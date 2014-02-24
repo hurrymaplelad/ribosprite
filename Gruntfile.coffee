@@ -26,6 +26,8 @@ module.exports = (grunt) ->
         options:
           replace:
             WD_PORT: '<%= sauceconnect.port %>'
+          add:
+            BROWSER: 'chrome'
 
     clean: ['built/']
 
