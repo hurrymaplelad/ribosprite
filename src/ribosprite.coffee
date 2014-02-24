@@ -1,39 +1,50 @@
 {renderable, button, form, div, input, label, span} = require 'teacup'
 
-prefixed = (prefix, action) ->
-  ['rv', prefix, action].filter(Boolean).join '-'
 
-ribosprite = module.exports
+prefixed = (prefix='') ->
+  ribosprite = {}
 
-ribosprite.helpText = renderable (field) ->
-  attrs = {}
-  attrs[prefixed field.prefix, 'text'] = "fieldErrors.#{field.name}"
-  span '.help-block', attrs
+  rvPrefixed = switch
+    when prefix then (action) ->
+      ['rv', prefix, action].join '-'
+    else (action) ->
+      "rv-#{action}"
 
-ribosprite.formHelpText = renderable (form) ->
-  div '.has-error', ->
+  ribosprite.helpText = (field) ->
     attrs = {}
-    attrs[prefixed form.prefix, 'text'] = "formError"
+    attrs[rvPrefixed 'text'] = "fieldErrors.#{field.name}"
     span '.help-block', attrs
 
-ribosprite.input = (type) ->
-  renderable (field) ->
-    {name, id, label: labelText, prefix} = field
+  ribosprite.formHelpText = (form) ->
+    div '.has-error', ->
+      attrs = {}
+      attrs[rvPrefixed 'text'] = "formError"
+      span '.help-block', attrs
+
+  ribosprite.input = (type) ->
+    (field) ->
+      {name, id, label: labelText} = field
+      attrs = {}
+      attrs[rvPrefixed 'class-has-error'] = "fieldErrors.#{name}"
+      div '.form-group', attrs, ->
+        label '.control-label', for: id, labelText
+        attrs = {id, type}
+        attrs[rvPrefixed 'value'] = "data.#{name}"
+        input '.form-control', attrs
+        ribosprite.helpText field
+
+  ribosprite.text = ribosprite.input 'text'
+
+  ribosprite.form = (body) ->
     attrs = {}
-    attrs[prefixed prefix, 'class-has-error'] = "fieldErrors.#{name}"
-    div '.form-group', attrs, ->
-      label '.control-label', for: id, labelText
-      attrs = {id, type}
-      attrs[prefixed prefix, 'value'] = "data.#{name}"
-      input '.form-control', attrs
-      ribosprite.helpText field
+    attrs[rvPrefixed 'on-submit'] = 'submit'
+    form attrs, body
 
-ribosprite.text = ribosprite.input 'text'
+  ribosprite.submit = (buttonText='Submit') ->
+    button '.btn.btn-default', type: 'submit', buttonText
 
-ribosprite.form = renderable ({prefix}={}, body) ->
-  attrs = {}
-  attrs[prefixed prefix, 'on-submit'] = 'submit'
-  form attrs, body
+  ribosprite
 
-ribosprite.submit = renderable (buttonText='Submit') ->
-  button '.btn.btn-default', type: 'submit', buttonText
+module.exports = prefixed()
+module.exports.prefixed = prefixed
+

@@ -17,7 +17,9 @@
   },
   "homepage": "https://github.com/hurrymaplelad/ribosprite",
   "bugs": "https://github.com/hurrymaplelad/ribosprite/issues",
-  "dependencies": {},
+  "dependencies": {
+    "teacup": "~0.3.0"
+  },
   "devDependencies": {
     "coffee-script": ">=1.7.x",
     "mocha": "~1.x.x",
@@ -40,7 +42,8 @@
     "mocha-as-promised": "~2.0.0",
     "wd": "~0.2.10",
     "grunt-phantom": "~0.2.0",
-    "grunt-cli": "~0.1.13"
+    "grunt-cli": "~0.1.13",
+    "sv-selenium": "~0.2.3"
   },
   "scripts": {
     "build": "coffee --bare --compile --output lib/ src/",

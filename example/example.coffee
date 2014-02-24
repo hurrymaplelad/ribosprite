@@ -5,7 +5,6 @@
 Springform = require 'springform'
 
 class RobotForm extends Springform
-  prefix: 'robo'
   fields: [
     {name: 'color'}
     {name: 'sound'}
@@ -42,8 +41,8 @@ $('#content').innerHTML = render ->
           small 'Rivets + Bootstrap +'
           br()
           small 'Springform + Teacup'
-        ribosprite.form robotForm, ->
-          div 'rv-robo-text': 'data.color', 'SKHDFKDJFHK'
+        ribosprite.form ->
+          div 'rv-text': 'data.color', 'SKHDFKDJFHK'
           ribosprite.text robotForm.fields.color
           ribosprite.text robotForm.fields.sound
           ribosprite.formHelpText robotForm
@@ -66,7 +65,6 @@ robotForm.submit = (event) ->
   unless robotForm.validate().hasErrors()
     alert 'Sold!'
 
-robotForm.bind color: 'blue'
+robotForm.bind color: 'blue', sound: 'foo'
 
-rivets.bind $('body'), robotForm,
-  config: prefix: 'rv-robo'
+rivets.bind $('body'), robotForm
