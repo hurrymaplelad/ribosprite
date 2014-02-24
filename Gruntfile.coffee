@@ -4,6 +4,8 @@ module.exports = (grunt) ->
   grunt.initConfig
     chromedriver:
       port: 4444
+    sauceconnect:
+      port: 4445
 
     ENV: process.env
     env:
@@ -19,6 +21,11 @@ module.exports = (grunt) ->
 
       test:
         PORT: 8001
+      sauce:
+        src: 'local.json'
+        options:
+          replace:
+            WD_PORT: '<%= sauceconnect.port %>'
 
     clean: ['built/']
 
@@ -81,7 +88,7 @@ module.exports = (grunt) ->
     'env:test'
     'build:example'
     'connect:example'
-    'phantom:test'
+    process.env.SAUCE and 'env:sauce' or 'phantom:test'
     'simplemocha'
   ]
 

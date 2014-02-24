@@ -6,7 +6,12 @@ chai.should()
 
 wd = require 'wd'
 chaiAsPromised.transferPromiseness = wd.transferPromiseness
-browser = wd.promiseChainRemote('localhost', process.env.WD_PORT)
+browser = wd.promiseChainRemote(
+  'localhost',
+  process.env.WD_PORT,
+  process.env.SAUCE_USERNAME,
+  process.env.SAUCE_ACCESS_KEY
+)
 
 if process.env.VERBOSE
   browser
@@ -22,9 +27,20 @@ formatJsonWireError = (test) ->
   test.err = new Error "#{wireError.summary} (status #{wireError.status}) #{wireError.detail}"
 
 before ->
-  @timeout 10000
+  @timeout 35000
+  capabilities =
+    browserName: 'chrome'
+  if process.env.SAUCE
+    capabilities =
+      browserName: 'chrome'
+      platform: 'OS X 10.9'
+      version : '31'
+      name: "Integration - #{process.env.NODE_ENV}"
+    if process.env.NODE_ENV is 'ci'
+      capabilities['tunnel-identifier'] = process.env.TRAVIS_JOB_NUMBER
+
   browser
-    .init({browserName: 'chrome'})
+    .init(capabilities)
     .get("http://localhost:#{process.env.PORT}")
 
 after ->
