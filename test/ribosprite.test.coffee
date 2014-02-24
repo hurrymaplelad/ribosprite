@@ -1,3 +1,4 @@
+{env} =  process
 require('mocha-as-promised')()
 chai = require 'chai'
 chaiAsPromised = require 'chai-as-promised'
@@ -8,12 +9,12 @@ wd = require 'wd'
 chaiAsPromised.transferPromiseness = wd.transferPromiseness
 browser = wd.promiseChainRemote(
   'localhost',
-  process.env.WD_PORT,
-  process.env.SAUCE_USERNAME,
-  process.env.SAUCE_ACCESS_KEY
+  env.WD_PORT,
+  env.SAUCE_USERNAME,
+  env.SAUCE_ACCESS_KEY
 )
 
-if process.env.VERBOSE
+if env.VERBOSE
   browser
     .on 'status', (info) ->
       console.log info.cyan
@@ -31,26 +32,29 @@ before ->
   capabilities =
     browserName: 'chrome'
 
-  if process.env.SAUCE
+  if env.SAUCE
     capabilities =
-      browserName: process.env.BROWSER
-      platform: process.env.PLATFORM
-      version: process.env.VERSION
-      name: "Integration - #{process.env.NODE_ENV}"
-    if process.env.NODE_ENV is 'travis'
-      capabilities['tunnel-identifier'] = process.env.TRAVIS_JOB_NUMBER
-      capabilities.build = process.env.TRAVIS_BUILD_NUMBER
+      browserName: env.BROWSER
+      platform: env.PLATFORM
+      version: env.VERSION
+      name: "Integration - #{env.NODE_ENV}"
+    if env.NODE_ENV is 'travis'
+      capabilities['tunnel-identifier'] = env.TRAVIS_JOB_NUMBER
+      capabilities.build = env.TRAVIS_BUILD_NUMBER
       capabilities.tags = ['travis']
 
   browser
     .init(capabilities)
-    .get("http://localhost:#{process.env.PORT}")
+    .get("http://localhost:#{env.PORT}")
 
 after ->
-  if failed = @currentTest?.state is 'failed'
+  if failed = @currentTest?.state isnt 'passed'
     formatJsonWireError @currentTest
 
-  unless failed and process.env.NODE_ENV is 'development'
+  if env.NODE_ENV is 'travis' and env.SAUCE
+    browser.sauceJobStatus not failed
+
+  unless failed and env.NODE_ENV is 'development'
     browser.quit()
 
 describe 'ribosprite', ->
