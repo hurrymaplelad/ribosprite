@@ -4,25 +4,13 @@
 #
 Springform = require 'springform'
 
-class RobotForm extends Springform
-  fields: [
-    {name: 'color'}
-    {name: 'sound'}
-  ]
-
-  validators: [
-    (form) ->
-      {data, fieldErrors} = form
-      unless data.color is 'red'
-        fieldErrors.color = 'Pick a better color'
-
-    (form) ->
-      unless form.data.sound?.length > 6
-        form.formError = 'Another robot already makes that sound'
-  ]
-
-robotForm = new RobotForm()
-
+robotForm = new Springform()
+  .validator (form) ->
+    unless form.data.color is 'red'
+      form.fieldErrors.color = 'Pick a better color'
+  .validator (form) ->
+    unless form.data.sound?.length > 6
+      form.formError = 'Another robot already makes that sound'
 #
 # Template
 #
@@ -41,11 +29,11 @@ $('#content').innerHTML = render ->
           small 'Rivets + Bootstrap +'
           br()
           small 'Springform + Teacup'
+
         ribosprite.form ->
-          div 'rv-text': 'data.color', 'SKHDFKDJFHK'
-          ribosprite.text robotForm.fields.color
-          ribosprite.text robotForm.fields.sound
-          ribosprite.formHelpText robotForm
+          ribosprite.input type: 'text', name: 'color'
+          ribosprite.input type: 'text', name: 'sound', label: 'What sound does it make?'
+          ribosprite.formHelpText()
           ribosprite.submit()
 
 #

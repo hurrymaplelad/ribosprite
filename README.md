@@ -2,3 +2,12 @@ ribosprite [![NPM version](https://badge.fury.io/js/ribosprite.png)](http://badg
 ==============
 
 Form templating for RIvets + BOotstrap + SPRIngform + TEacup
+
+Interactions:
+
+- Click label to focus field
+- Enter to submit from focused field
+- Prevent submit while processing
+- Disable submit button while processing
+- Show field specific errors next to fields with error highlight
+- Show whole form errors near the submit button

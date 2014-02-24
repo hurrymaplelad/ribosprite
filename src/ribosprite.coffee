@@ -1,47 +1,77 @@
-{renderable, button, form, div, input, label, span} = require 'teacup'
+{renderable, button, form, div, input, label, span, normalizeArgs} = require 'teacup'
+
+nameToLabel = (name) ->
+  name
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .replace(/(^[a-z])/g, (str, p1) -> p1.toUpperCase())
 
 
 prefixed = (prefix='') ->
   ribosprite = {}
 
-  rvPrefixed = switch
-    when prefix then (action) ->
-      ['rv', prefix, action].join '-'
+  _prefixed = (namespace) ->
+    if prefix then (action) ->
+      [namespace, prefix, action].join '-'
     else (action) ->
-      "rv-#{action}"
+      "#{namespace}-#{action}"
 
-  ribosprite.helpText = (field) ->
-    attrs = {}
-    attrs[rvPrefixed 'text'] = "fieldErrors.#{field.name}"
+
+  rvPrefixed = _prefixed 'rv'
+  riboPrefixed = _prefixed 'ribo'
+
+  normalizeHelperArgs = (args) ->
+    {attrs, contents} = normalizeArgs args
+    name = attrs.name
+    delete attrs.name
+    {attrs, contents, name}
+
+  normalizeFieldArgs = (args) ->
+    {attrs, contents} = normalizeArgs args
+    delete attrs.label
+    name = attrs.name
+    delete attrs.name
+    labelText = attrs.label
+    if name
+      labelText ?= nameToLabel name
+      attrs.id ?= riboPrefixed name
+
+    {attrs, contents, labelText, name}
+
+  ribosprite.helpText = ->
+    {attrs, contents, name} = normalizeHelperArgs arguments
+    attrs[rvPrefixed 'text'] = "fieldErrors.#{name}"
     span '.help-block', attrs
 
-  ribosprite.formHelpText = (form) ->
+  ribosprite.formHelpText = ->
     div '.has-error', ->
       attrs = {}
       attrs[rvPrefixed 'text'] = "formError"
       span '.help-block', attrs
 
-  ribosprite.input = (type) ->
-    (field) ->
-      {name, id, label: labelText} = field
-      attrs = {}
-      attrs[rvPrefixed 'class-has-error'] = "fieldErrors.#{name}"
-      div '.form-group', attrs, ->
-        label '.control-label', for: id, labelText
-        attrs = {id, type}
-        attrs[rvPrefixed 'value'] = "data.#{name}"
-        input '.form-control', attrs
-        ribosprite.helpText field
+  ribosprite.formGroup = ->
+    {attrs, contents, name} = normalizeHelperArgs arguments
+    attrs[rvPrefixed 'class-has-error'] = "fieldErrors.#{name}"
+    div '.form-group', attrs, contents
 
-  ribosprite.text = ribosprite.input 'text'
+  ribosprite.input = ->
+    {attrs, contents, name, labelText} = normalizeFieldArgs arguments
+    attrs[rvPrefixed 'value'] = "data.#{name}"
 
-  ribosprite.form = (body) ->
-    attrs = {}
+    ribosprite.formGroup {name}, ->
+      label '.control-label', for: attrs.id, labelText
+      input '.form-control', attrs
+      ribosprite.helpText {name}
+
+  ribosprite.form = ->
+    {attrs, contents} = normalizeArgs arguments
     attrs[rvPrefixed 'on-submit'] = 'submit'
-    form attrs, body
+    form attrs, contents
 
-  ribosprite.submit = (buttonText='Submit') ->
-    button '.btn.btn-default', type: 'submit', buttonText
+  ribosprite.submit = ->
+    {attrs, contents} = normalizeArgs arguments
+    attrs.type = 'submit'
+    contents ?= 'Submit'
+    button '.btn.btn-default', attrs, contents
 
   ribosprite
 
