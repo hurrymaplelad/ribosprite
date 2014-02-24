@@ -18,7 +18,8 @@
   "homepage": "https://github.com/hurrymaplelad/ribosprite",
   "bugs": "https://github.com/hurrymaplelad/ribosprite/issues",
   "dependencies": {
-    "teacup": "~0.3.0"
+    "teacup": "~0.3.0",
+    "springform": "~0.0.0"
   },
   "devDependencies": {
     "coffee-script": ">=1.7.x",
@@ -43,7 +44,9 @@
     "wd": "~0.2.10",
     "grunt-phantom": "~0.2.0",
     "grunt-cli": "~0.1.13",
-    "sv-selenium": "~0.2.3"
+    "sv-selenium": "~0.2.3",
+    "grunt-env": "~0.4.1",
+    "portchecker": "~0.1.2"
   },
   "scripts": {
     "build": "coffee --bare --compile --output lib/ src/",

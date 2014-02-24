@@ -2,20 +2,36 @@ module.exports = (grunt) ->
   require('load-grunt-tasks')(grunt)
 
   grunt.initConfig
+    chromedriver:
+      port: 4444
+
+    ENV: process.env
+    env:
+      default:
+        options:
+          add:
+            NODE_ENV: 'development'
+            WD_PORT: 8002
+            PORT: 8000
+
+      chromedriver:
+        WD_PORT: '<%= chromedriver.port %>'
+
+      test:
+        PORT: 8001
+
     clean: ['built/']
 
     connect:
       options:
         base: 'built'
+        port: '<%= ENV.PORT %>'
       example: {}
-      test:
-        options:
-          port: 8001
 
     phantom:
       test:
         options:
-          port: 8002
+          port: '<%= ENV.WD_PORT %>'
 
     watchify:
       options:
@@ -39,7 +55,7 @@ module.exports = (grunt) ->
 
     open:
       example:
-        path: 'http://localhost:8000'
+        path: 'http://localhost:<%= ENV.PORT %>'
 
     esteWatch:
       options:
@@ -60,16 +76,45 @@ module.exports = (grunt) ->
     'watchify'
   ]
 
+  grunt.registerTask 'test', 'Build and run the test suite in phantom', [
+    'env:default'
+    'env:test'
+    'build:example'
+    'connect:example'
+    'phantom:test'
+    'simplemocha'
+  ]
+
   grunt.registerTask 'dev', 'Start a local development server', [
+    'env:default'
     'build:example'
     'connect:example'
     'open:example'
     'esteWatch'
   ]
 
-  grunt.registerTask 'test', [
-    'build:example'
-    'connect:test'
-    'phantom:test'
+
+  grunt.registerTask 'test:dev', 'Run tests in chromedriver when development server is already running', [
+    'env:default'
+    'env:chromedriver'
+    'ensureChromedriver'
     'simplemocha'
   ]
+
+  grunt.registerTask 'ensureChromedriver', ->
+    portchecker = require 'portchecker'
+    {spawn} = require 'child_process'
+    fs = require 'fs'
+    done = @async()
+    portchecker.isOpen grunt.config('chromedriver.port'), 'localhost', (open, port, host) ->
+      if open
+        grunt.log.writeln "chromedriver already running on #{host}:#{port}"
+        return done()
+      logfile = './chromedriver.log'
+      log = fs.openSync logfile, 'a'
+      grunt.log.writeln "starting chromedriver on #{host}:#{port} logging to #{logfile}"
+      spawn './node_modules/.bin/start_selenium_with_chromedriver', [],
+        detached: true
+        stdio: ['ignore', log, log]
+      done()
+

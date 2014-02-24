@@ -6,7 +6,7 @@ chai.should()
 
 wd = require 'wd'
 chaiAsPromised.transferPromiseness = wd.transferPromiseness
-browser = wd.promiseChainRemote('127.0.0.1', 4444)
+browser = wd.promiseChainRemote('localhost', process.env.WD_PORT)
 
 if process.env.VERBOSE
   browser
@@ -25,12 +25,13 @@ before ->
   @timeout 10000
   browser
     .init({browserName: 'chrome'})
-    .get('http://localhost:8001')
+    .get("http://localhost:#{process.env.PORT}")
 
 after ->
-  if @currentTest.state is 'failed'
+  if failed = @currentTest?.state is 'failed'
     formatJsonWireError @currentTest
-  else
+
+  unless failed and process.env.NODE_ENV is 'development'
     browser.quit()
 
 describe 'ribosprite', ->
