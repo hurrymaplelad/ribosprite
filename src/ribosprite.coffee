@@ -71,7 +71,8 @@ prefixed = (prefix='') ->
     {attrs, contents} = normalizeArgs arguments
     attrs.type = 'submit'
     contents ?= 'Submit'
-    button '.btn.btn-default', attrs, contents
+    attrs[rvPrefixed 'disabled'] = 'processing'
+    button '.btn.btn-primary', attrs, contents
 
   ribosprite
 

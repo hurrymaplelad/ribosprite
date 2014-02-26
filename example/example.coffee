@@ -11,14 +11,14 @@ robotForm = ->
         form.fieldErrors.color = 'Pick a better color'
     .validator (form) ->
       unless form.data.sound?.length > 6
-        form.formError = 'Another robot already makes that sound'
+        form.formError = 'That color robot should make a louder sound'
 #
 # Template
 #
 $ = (selector) ->
   document.querySelector selector
 ribosprite = require '../src/ribosprite'
-{render, a, br, div, h1, h2, small, text, form} = require 'teacup'
+{render, a, br, div, h1, h3, small, text, form, raw} = require 'teacup'
 
 $('#content').innerHTML = render ->
   div '.container', ->
@@ -36,19 +36,32 @@ $('#content').innerHTML = render ->
           ribo.form ->
             ribo.input type: 'text', name: 'color'
             ribo.input type: 'text', name: 'sound', label: 'What sound does it make?'
-            ribo.formHelpText()
             ribo.submit()
+            ribo.formHelpText()
 
+        # - Click label to focus input
         div '#click-to-focus', ->
           ribo = ribosprite.prefixed 'ctf'
-          h2 ->
+          h3 ->
             a href: '#click-to-focus', '#'
             text " Click a label to focus it's input"
           ribo.form ->
             ribo.input type: 'text', name: 'color', placeholder: 'Maybe red?'
+
+        # - Disable submit button while processing
+        div '#processing', ->
+          ribo = ribosprite.prefixed 'processing'
+          h3 ->
+            a href: '#processing', '#'
+            text " Disable submission while processing"
+            br()
+            small -> raw 'Both button clicking and <kbd>enter</kbd> key'
+          ribo.form ->
+            ribo.input type: 'text', name: 'color'
+            ribo.submit()
+
+
 # - Enter to submit from focused field
-# - Prevent submit while processing
-# - Disable submit button while processing
 # - Show field specific errors next to fields with error highlight
 # - Show whole form errors near the submit button
 
@@ -67,9 +80,11 @@ rivets.adapters['.'].subscribe = (obj, keypath, callback) ->
 
 # Simple
 simpleForm = robotForm()
-  .processor ->
+  .processor (done) ->
     unless simpleForm.validate().hasErrors()
       alert 'Sold!'
+    done()
+
   .bind
     color: 'blue'
     sound: 'foo'
@@ -77,4 +92,14 @@ simpleForm = robotForm()
 rivets.bind $('#simple'), simpleForm
 
 # Click to focus
-rivets.bind $('#click-to-focus'), robotForm(), config: prefix: 'ctf'
+rivets.bind $('#click-to-focus'), robotForm(), config: prefix: 'rv-ctf'
+
+# Processing
+processingForm = new Springform()
+  .processor (done) ->
+    if window.webdriver
+      window.processingFormDone = done
+    else
+      setTimeout done, 1500
+
+rivets.bind $('#processing'), processingForm, config: prefix: 'rv-processing'

@@ -19,7 +19,7 @@
   "bugs": "https://github.com/hurrymaplelad/ribosprite/issues",
   "dependencies": {
     "teacup": "~0.3.0",
-    "springform": "~0.0.0"
+    "springform": "~0.1.0"
   },
   "devDependencies": {
     "coffee-script": ">=1.7.x",

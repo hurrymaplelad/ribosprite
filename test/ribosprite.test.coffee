@@ -82,4 +82,27 @@ describe 'ribosprite', ->
         .active()
         .getAttribute('id').should.eventually.equal 'ribo-ctf-color'
 
+  # Disable while processing
+  describe 'while a form is processing', ->
+    before ->
+      browser
+        .execute('window.webdriver = true')
+        .elementByCssSelector('#processing .btn-primary')
+        .click()
+
+    it 'disables submission', ->
+      browser
+        .elementByCssSelector('#processing .btn-primary[disabled]')
+        .isDisplayed().should.eventually.equal true
+
+    describe 'when processing completes', ->
+      before ->
+        browser.execute('window.processingFormDone()')
+
+      it 're-enables submission', ->
+        browser
+          .elementByCssSelector('#processing .btn-primary:not([disabled])')
+          .isDisplayed().should.eventually.equal true
+
+
 
