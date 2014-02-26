@@ -23,14 +23,18 @@ ribosprite = require '../src/ribosprite'
 $('#content').innerHTML = render ->
   div '.container', ->
     div '.row', ->
-      div '.col-md-9', ->
+      div '.col-sm-4', ->
         h1 ->
           text 'RiBoSpriTe'
           br()
           small 'Rivets + Bootstrap +'
           br()
           small 'Springform + Teacup'
+      div '.col-sm-4.text-right', ->
+        a href: 'http://github.com/hurrymaplelad/ribosprite', 'View source on GitHub'
 
+    div '.row', ->
+      div '.col-sm-8', ->
         div '#simple', ->
           ribo = ribosprite
           ribo.form ->
