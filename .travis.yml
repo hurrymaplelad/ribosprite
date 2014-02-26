@@ -7,10 +7,10 @@ env:
     - SAUCE=1
     - SAUCE_USERNAME=ribosprite
     - secure: UrMstPhnhOfCkt3O/kVnAChXHpys9EFhTeRXNK+PE9dniyNaWaBZ3rCjc8hzQP7MrzKEvrRl2YCBPfxzZBoW1bO5Lg/rBFQW72wIuu7QJHAyf+l2QZkk/vi8D2Prj/NBLfxKPka/Ku2mTs1Nrvu+Jduw+1gLi+ppXreDKHBG+VQ=
+  matrix:
+    env: BROWSER=chrome
 matrix:
   include:
-    - node_js: '0.10'
-      env: BROWSER=chrome
     - node_js: '0.10'
       env: BROWSER=iphone
     - node_js: '0.10'

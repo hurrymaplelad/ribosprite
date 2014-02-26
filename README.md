@@ -3,6 +3,8 @@ ribosprite [![NPM version](https://badge.fury.io/js/ribosprite.png)](http://badg
 
 Form templating for RIvets + BOotstrap + SPRIngform + TEacup
 
+[See it live](http://hurrymaplelad.github.io/ribosprite/)
+
 
 Browser support
 ---------------

@@ -3,4 +3,5 @@ node_modules/
 local.json
 npm-debug.log
 .DS_Store
+.grunt/
 *.log

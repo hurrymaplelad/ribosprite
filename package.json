@@ -45,7 +45,8 @@
     "grunt-cli": "~0.1.13",
     "sv-selenium": "~0.2.3",
     "grunt-env": "~0.4.1",
-    "portchecker": "~0.1.2"
+    "portchecker": "~0.1.2",
+    "grunt-gh-pages": "~0.9.1"
   },
   "scripts": {
     "build": "coffee --bare --compile --output lib/ src/",

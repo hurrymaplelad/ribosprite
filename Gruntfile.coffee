@@ -29,7 +29,10 @@ module.exports = (grunt) ->
           add:
             BROWSER: 'chrome'
 
-    clean: ['built/']
+    clean: src: [
+      'built/'
+      '.grunt/'
+    ]
 
     connect:
       options:
@@ -79,6 +82,17 @@ module.exports = (grunt) ->
 
     simplemocha:
       all: 'test/**/*.coffee'
+
+    'gh-pages':
+      options:
+        base: 'built'
+      src: '**/*'
+
+  grunt.registerTask 'publish:example', [
+    'clean'
+    'build:example'
+    'gh-pages'
+  ]
 
   grunt.registerTask 'build:example', [
     'copy:example'
