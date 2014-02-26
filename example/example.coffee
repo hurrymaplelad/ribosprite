@@ -4,20 +4,21 @@
 #
 Springform = require 'springform'
 
-robotForm = new Springform()
-  .validator (form) ->
-    unless form.data.color is 'red'
-      form.fieldErrors.color = 'Pick a better color'
-  .validator (form) ->
-    unless form.data.sound?.length > 6
-      form.formError = 'Another robot already makes that sound'
+robotForm = ->
+  new Springform()
+    .validator (form) ->
+      unless form.data.color is 'red'
+        form.fieldErrors.color = 'Pick a better color'
+    .validator (form) ->
+      unless form.data.sound?.length > 6
+        form.formError = 'Another robot already makes that sound'
 #
 # Template
 #
 $ = (selector) ->
   document.querySelector selector
 ribosprite = require '../src/ribosprite'
-{render, br, div, h1, small, text, form} = require 'teacup'
+{render, a, br, div, h1, h2, small, text, form} = require 'teacup'
 
 $('#content').innerHTML = render ->
   div '.container', ->
@@ -30,11 +31,26 @@ $('#content').innerHTML = render ->
           br()
           small 'Springform + Teacup'
 
-        ribosprite.form ->
-          ribosprite.input type: 'text', name: 'color'
-          ribosprite.input type: 'text', name: 'sound', label: 'What sound does it make?'
-          ribosprite.formHelpText()
-          ribosprite.submit()
+        div '#simple', ->
+          ribo = ribosprite
+          ribo.form ->
+            ribo.input type: 'text', name: 'color'
+            ribo.input type: 'text', name: 'sound', label: 'What sound does it make?'
+            ribo.formHelpText()
+            ribo.submit()
+
+        div '#click-to-focus', ->
+          ribo = ribosprite.prefixed 'ctf'
+          h2 ->
+            a href: '#click-to-focus', '#'
+            text " Click a label to focus it's input"
+          ribo.form ->
+            ribo.input type: 'text', name: 'color', placeholder: 'Maybe red?'
+# - Enter to submit from focused field
+# - Prevent submit while processing
+# - Disable submit button while processing
+# - Show field specific errors next to fields with error highlight
+# - Show whole form errors near the submit button
 
 #
 # Binding
@@ -48,11 +64,17 @@ rivets.adapters['.'].subscribe = (obj, keypath, callback) ->
   obj[keypath] ?= undefined
   origSubscribe.apply @, arguments
 
-robotForm.submit = (event) ->
-  event?.preventDefault()
-  unless robotForm.validate().hasErrors()
-    alert 'Sold!'
 
-robotForm.bind color: 'blue', sound: 'foo'
+# Simple
+simpleForm = robotForm()
+  .processor ->
+    unless simpleForm.validate().hasErrors()
+      alert 'Sold!'
+  .bind
+    color: 'blue'
+    sound: 'foo'
 
-rivets.bind $('body'), robotForm
+rivets.bind $('#simple'), simpleForm
+
+# Click to focus
+rivets.bind $('#click-to-focus'), robotForm(), config: prefix: 'ctf'

@@ -62,10 +62,24 @@ describe 'ribosprite', ->
     describe 'submitting the form', ->
       before ->
         browser
-          .elementByCssSelector('button[type=submit]')
+          .elementByCssSelector('#simple button[type=submit]')
           .click()
 
       it 'shows validation errors', ->
         browser
           .elementByCssSelector('[rv-value="data.color"] + .help-block')
           .text().should.eventually.contain('Pick a better color')
+
+  # Click to focus
+  describe "clicking a field's label", ->
+    before ->
+      browser
+        .elementByCssSelector('#click-to-focus label')
+        .click()
+
+    it 'focuses the input', ->
+      browser
+        .active()
+        .getAttribute('id').should.eventually.equal 'ribo-ctf-color'
+
+
